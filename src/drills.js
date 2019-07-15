@@ -1,8 +1,27 @@
-require('knex')({
+const knex = require('knex')
+
+const knexInstance = knex({
     client: 'pg',
-    connection: 'postgres://user:pass@localhost:5432/dbname'
+    connection: 'postgresql://dunder-mifflin@localhost/knex-practice'
 })
 
-function searchTerm() {
-
+function search(searchTerm) {
+    knexInstance
+        .from('shopping_list')
+        .select('*')
+        .where('name', 'ILIKE', `%${searchTerm}%`)
+        .then(res => console.log(res))
 }
+
+function findPage(pageNumber) {
+    const itemsPerPage = 6
+    const offset = (pageNumber - 1) * itemsPerPage
+    knexInstance
+        .from('shopping_list')
+        .select('*')
+        .offset(offset)
+        .limit(itemsPerPage)
+        .then(res => console.log(res))
+}
+
+findPage(23)
