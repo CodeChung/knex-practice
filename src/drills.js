@@ -24,4 +24,23 @@ function findPage(pageNumber) {
         .then(res => console.log(res))
 }
 
-findPage(23)
+function getItemsAfterDate(daysAgo) {
+    knexInstance
+        .from('shopping_list')
+        .select('*')
+        .where('date_added', '>',
+            knexInstance.raw(`now() - '?? days'::INTERVAL`, daysAgo)
+        )
+        .then(res => console.log(res))
+}
+
+function totalCost() {
+    knexInstance
+        .from('shopping_list')
+        .select('category')
+        .groupBy('category')
+        .sum('price as total')
+        .then(res => console.log(res))
+}
+
+totalCost()
